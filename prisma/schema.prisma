@@ -1,0 +1,60 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Character {
+  id        Int           @id @default(autoincrement())
+  name      String        @unique
+  sex       Sex
+  level     Int
+  vocation  Vocation
+  world     String        @default("")
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  sessions  HuntSession[]
+}
+
+model Spot {
+  id       Int           @id @default(autoincrement())
+  name     String        @unique
+  sessions HuntSession[]
+}
+
+model HuntSession {
+  id           Int       @id @default(autoincrement())
+  characterId  Int
+  character    Character @relation(fields: [characterId], references: [id])
+  spotId       Int
+  spot         Spot      @relation(fields: [spotId], references: [id])
+  startedAt    DateTime
+  duration     Int // minutes
+  silverEarned Int       @default(0)
+  xpGained     Int       @default(0)
+  notes        String?   @db.Text
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+enum Sex {
+  MALE
+  FEMALE
+}
+
+enum Vocation {
+  KNIGHT
+  ELITE_KNIGHT
+  PALADIN
+  ROYAL_PALADIN
+  SORCERER
+  MASTER_SORCERER
+  DRUID
+  ELDER_DRUID
+}
