@@ -1,6 +1,6 @@
 'use client'
 
-import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer } from 'recharts'
+import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer, Cell } from 'recharts'
 import { SpotSummary, ClassSummary, DateSummary, ViewTab } from '@/types'
 import { CHART_COLORS, VOCATION_LABELS, formatSilver } from '@/lib/utils'
 
