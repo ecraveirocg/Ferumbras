@@ -1,12 +1,19 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Character } from '@/types'
+import { Character, Vocation } from '@/types'
 import CharacterCard from '@/components/characters/CharacterCard'
-import CharacterForm from '@/components/characters/CharacterForm'
-import Modal from '@/components/ui/Modal'
+import CreateCharacterModal from '@/components/characters/CreateCharacterModal'
 import Button from '@/components/ui/Button'
 import { Plus, Users } from 'lucide-react'
+
+type FormPayload = {
+  name: string
+  level: number
+  sex: 'MALE' | 'FEMALE'
+  world?: string
+  vocation: Vocation
+}
 
 export default function CharactersPage() {
   const [characters, setCharacters] = useState<(Character & { _count: { sessions: number } })[]>([])
@@ -23,7 +30,7 @@ export default function CharactersPage() {
 
   useEffect(() => { fetchCharacters() }, [])
 
-  const handleCreate = async (data: Omit<Character, 'id' | 'createdAt' | 'updatedAt'>) => {
+  const handleCreate = async (data: FormPayload) => {
     setSaving(true)
     await fetch('/api/characters', {
       method: 'POST',
@@ -35,7 +42,7 @@ export default function CharactersPage() {
     fetchCharacters()
   }
 
-  const handleEdit = async (data: Omit<Character, 'id' | 'createdAt' | 'updatedAt'>) => {
+  const handleEdit = async (data: FormPayload) => {
     if (!editChar) return
     setSaving(true)
     await fetch(`/api/characters/${editChar.id}`, {
@@ -70,12 +77,12 @@ export default function CharactersPage() {
       {loading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {[...Array(3)].map((_, i) => (
-            <div key={i} className="bg-[#212121] border border-[#2e2e2e] rounded-xl p-4 h-32 animate-pulse" />
+            <div key={i} className="bg-[#1a1a1a] border border-[#2e2e2e] rounded-xl p-4 h-32 animate-pulse" />
           ))}
         </div>
       ) : characters.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 text-gray-600">
-          <div className="w-16 h-16 rounded-full bg-[#212121] flex items-center justify-center mb-4">
+          <div className="w-16 h-16 rounded-full bg-[#1a1a1a] flex items-center justify-center mb-4">
             <Users className="w-8 h-8 text-gray-700" />
           </div>
           <p className="text-base font-medium text-gray-400 mb-1">No characters yet</p>
@@ -98,24 +105,22 @@ export default function CharactersPage() {
         </div>
       )}
 
-      <Modal isOpen={showModal} onClose={() => setShowModal(false)} title="Add Character">
-        <CharacterForm
-          onSubmit={handleCreate}
-          onCancel={() => setShowModal(false)}
-          loading={saving}
-        />
-      </Modal>
+      {/* Create modal */}
+      <CreateCharacterModal
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        onSubmit={handleCreate}
+        loading={saving}
+      />
 
-      <Modal isOpen={!!editChar} onClose={() => setEditChar(null)} title="Edit Character">
-        {editChar && (
-          <CharacterForm
-            character={editChar}
-            onSubmit={handleEdit}
-            onCancel={() => setEditChar(null)}
-            loading={saving}
-          />
-        )}
-      </Modal>
+      {/* Edit modal */}
+      <CreateCharacterModal
+        isOpen={!!editChar}
+        onClose={() => setEditChar(null)}
+        onSubmit={handleEdit}
+        loading={saving}
+        character={editChar ?? undefined}
+      />
     </div>
   )
 }

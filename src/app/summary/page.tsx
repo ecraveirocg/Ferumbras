@@ -4,13 +4,15 @@ import { useState, useEffect } from 'react'
 import { SummaryData, TimeFilter, ViewTab } from '@/types'
 import StatCard from '@/components/summary/StatCard'
 import TotalHoursChart from '@/components/summary/TotalHoursChart'
-import TotalSilverChart from '@/components/summary/TotalSilverChart'
-import SilverPerHourChart from '@/components/summary/SilverPerHourChart'
+import TotalGoldChart from '@/components/summary/TotalGoldChart'
+import GoldPerHourChart from '@/components/summary/GoldPerHourChart'
+import XpPerHourChart from '@/components/summary/XpPerHourChart'
 import RecentSessions from '@/components/summary/RecentSessions'
+import ActivityCalendar from '@/components/summary/ActivityCalendar'
 import Button from '@/components/ui/Button'
 import Link from 'next/link'
-import { Plus, Filter } from 'lucide-react'
-import { formatSilver, formatHoursDecimal } from '@/lib/utils'
+import { Plus, Filter, CalendarCheck, Swords, CircleDollarSign, Clock } from 'lucide-react'
+import { formatHoursDecimal, formatGoldShort, formatHours } from '@/lib/utils'
 import { cn } from '@/lib/utils'
 
 const TIME_FILTERS: { label: string; value: TimeFilter }[] = [
@@ -97,47 +99,76 @@ export default function SummaryPage() {
       </div>
 
       {/* Stat cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
         <StatCard
-          label="Total Silver Earned"
-          value={loading ? '—' : formatSilver(data?.totalSilver ?? 0)}
-          icon="🪙"
+          label="Days Active"
+          value={loading ? '—' : String(data?.daysActive ?? 0)}
+          icon={<CalendarCheck className="w-5 h-5" />}
+          color="green"
+        />
+        <StatCard
+          label="Total XP"
+          value={loading ? '—' : formatGoldShort(data?.totalXp ?? 0)}
+          icon={<Swords className="w-5 h-5" />}
+          color="red"
+          sparkData={data?.sessionsByDate.map(d => ({ value: d.totalXp ?? 0, label: d.date }))}
+          sparkFormatter={(v) => formatGoldShort(v) + ' XP'}
+        />
+        <StatCard
+          label="Total Gold"
+          value={loading ? '—' : formatGoldShort(data?.totalGold ?? 0)}
+          icon={<CircleDollarSign className="w-5 h-5" />}
           color="yellow"
+          sparkData={data?.sessionsByDate.map(d => ({ value: d.totalGold, label: d.date }))}
+          sparkFormatter={formatGoldShort}
         />
         <StatCard
-          label="Average Silver an Hour"
-          value={loading ? '—' : formatSilver(data?.avgSilverPerHour ?? 0) + '/h'}
-          icon="⚡"
-          color="blue"
-        />
-        <StatCard
-          label="Total Hours Grinded"
+          label="Total Hours Hunting"
           value={loading ? '—' : formatHoursDecimal(data ? data.totalHours * 60 : 0) + 'h'}
-          icon="⏱"
-          color="gray"
+          icon={<Clock className="w-5 h-5" />}
+          color="blue"
+          sparkData={data?.sessionsByDate.map(d => ({ value: d.totalMinutes, label: d.date }))}
+          sparkFormatter={formatHours}
         />
       </div>
 
+      {/* Activity Calendar */}
+      <div className="mb-6">
+        <ActivityCalendar />
+      </div>
+
       {/* Charts grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
-        <TotalHoursChart
-          sessionsBySpot={data?.sessionsBySpot ?? []}
-          sessionsByClass={data?.sessionsByClass ?? []}
-          viewTab={viewTab}
-        />
-        <TotalSilverChart
-          sessionsBySpot={data?.sessionsBySpot ?? []}
-          sessionsByClass={data?.sessionsByClass ?? []}
-          sessionsByDate={data?.sessionsByDate ?? []}
-          viewTab={viewTab}
-        />
-        <SilverPerHourChart
-          sessionsBySpot={data?.sessionsBySpot ?? []}
-          sessionsByClass={data?.sessionsByClass ?? []}
-          sessionsByDate={data?.sessionsByDate ?? []}
-          viewTab={viewTab}
-        />
-        <RecentSessions sessions={data?.recentSessions ?? []} />
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4 items-stretch">
+        {/* Left column */}
+        <div className="flex flex-col gap-4">
+          <TotalHoursChart
+            sessionsBySpot={data?.sessionsBySpot ?? []}
+            sessionsByClass={data?.sessionsByClass ?? []}
+            viewTab={viewTab}
+          />
+          <RecentSessions sessions={data?.recentSessions ?? []} />
+        </div>
+        {/* Right column */}
+        <div className="flex flex-col gap-4 h-full">
+          <TotalGoldChart
+            sessionsBySpot={data?.sessionsBySpot ?? []}
+            sessionsByClass={data?.sessionsByClass ?? []}
+            sessionsByDate={data?.sessionsByDate ?? []}
+            viewTab={viewTab}
+          />
+          <GoldPerHourChart
+            sessionsBySpot={data?.sessionsBySpot ?? []}
+            sessionsByClass={data?.sessionsByClass ?? []}
+            sessionsByDate={data?.sessionsByDate ?? []}
+            viewTab={viewTab}
+          />
+          <XpPerHourChart
+            sessionsBySpot={data?.sessionsBySpot ?? []}
+            sessionsByClass={data?.sessionsByClass ?? []}
+            sessionsByDate={data?.sessionsByDate ?? []}
+            viewTab={viewTab}
+          />
+        </div>
       </div>
     </div>
   )

@@ -5,8 +5,15 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export function formatSilver(amount: number): string {
+export function formatGold(amount: number): string {
   return amount.toLocaleString('de-DE')
+}
+
+export function formatGoldShort(amount: number): string {
+  if (amount >= 1_000_000_000) return (amount / 1_000_000_000).toFixed(2) + ' KKK'
+  if (amount >= 1_000_000)     return (amount / 1_000_000).toFixed(1)     + ' KK'
+  if (amount >= 1_000)         return (amount / 1_000).toFixed(1)         + ' K'
+  return String(amount)
 }
 
 export function formatHours(minutes: number): string {
@@ -21,9 +28,9 @@ export function formatHoursDecimal(minutes: number): string {
   return (minutes / 60).toFixed(1)
 }
 
-export function silverPerHour(silver: number, durationMinutes: number): number {
+export function goldPerHour(gold: number, durationMinutes: number): number {
   if (durationMinutes === 0) return 0
-  return Math.round((silver / durationMinutes) * 60)
+  return Math.round((gold / durationMinutes) * 60)
 }
 
 export function formatDate(date: string | Date): string {
@@ -47,14 +54,11 @@ export function formatDateTime(date: string | Date): string {
 }
 
 export const VOCATION_LABELS: Record<string, string> = {
-  KNIGHT: 'Knight',
-  ELITE_KNIGHT: 'Elite Knight',
-  PALADIN: 'Paladin',
-  ROYAL_PALADIN: 'Royal Paladin',
-  SORCERER: 'Sorcerer',
+  ELITE_KNIGHT:    'Elite Knight',
+  ROYAL_PALADIN:   'Royal Paladin',
   MASTER_SORCERER: 'Master Sorcerer',
-  DRUID: 'Druid',
-  ELDER_DRUID: 'Elder Druid',
+  ELDER_DRUID:     'Elder Druid',
+  EXALTED_MONK:    'Exalted Monk',
 }
 
 export const SEX_LABELS: Record<string, string> = {
@@ -63,21 +67,18 @@ export const SEX_LABELS: Record<string, string> = {
 }
 
 export const VOCATION_COLORS: Record<string, string> = {
-  KNIGHT: '#ef4444',
-  ELITE_KNIGHT: '#f97316',
-  PALADIN: '#eab308',
-  ROYAL_PALADIN: '#84cc16',
-  SORCERER: '#06b6d4',
+  ELITE_KNIGHT:    '#f97316',
+  ROYAL_PALADIN:   '#84cc16',
   MASTER_SORCERER: '#3b82f6',
-  DRUID: '#8b5cf6',
-  ELDER_DRUID: '#d946ef',
+  ELDER_DRUID:     '#d946ef',
+  EXALTED_MONK:    '#facc15',
 }
 
 export const CHART_COLORS = [
-  '#3b82f6',
-  '#22c55e',
-  '#f59e0b',
   '#ef4444',
+  '#f59e0b',
+  '#22c55e',
+  '#3b82f6',
   '#8b5cf6',
   '#06b6d4',
   '#f97316',

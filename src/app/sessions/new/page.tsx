@@ -16,7 +16,7 @@ export default function NewSessionPage() {
     spotId: number
     startedAt: string
     duration: number
-    silverEarned: number
+    goldEarned: number
     xpGained: number
     notes: string | null
   }) => {

@@ -1,14 +1,11 @@
 export type Sex = 'MALE' | 'FEMALE'
 
 export type Vocation =
-  | 'KNIGHT'
   | 'ELITE_KNIGHT'
-  | 'PALADIN'
   | 'ROYAL_PALADIN'
-  | 'SORCERER'
   | 'MASTER_SORCERER'
-  | 'DRUID'
   | 'ELDER_DRUID'
+  | 'EXALTED_MONK'
 
 export interface Character {
   id: number
@@ -34,7 +31,7 @@ export interface HuntSession {
   spot: Spot
   startedAt: string
   duration: number
-  silverEarned: number
+  goldEarned: number
   xpGained: number
   notes: string | null
   createdAt: string
@@ -42,9 +39,13 @@ export interface HuntSession {
 }
 
 export interface SummaryData {
-  totalSilver: number
-  avgSilverPerHour: number
+  totalGold: number
+  avgGoldPerHour: number
   totalHours: number
+  totalXp: number
+  daysActive: number
+  currentStreak: number
+  longestStreak: number
   sessionsBySpot: SpotSummary[]
   sessionsByClass: ClassSummary[]
   sessionsByDate: DateSummary[]
@@ -54,26 +55,32 @@ export interface SummaryData {
 export interface SpotSummary {
   spotId: number
   spotName: string
-  totalSilver: number
+  totalGold: number
+  totalXp: number
   totalMinutes: number
   sessionCount: number
-  silverPerHour: number
+  goldPerHour: number
+  xpPerHour: number
 }
 
 export interface ClassSummary {
   vocation: Vocation
-  totalSilver: number
+  totalGold: number
+  totalXp: number
   totalMinutes: number
   sessionCount: number
-  silverPerHour: number
+  goldPerHour: number
+  xpPerHour: number
 }
 
 export interface DateSummary {
   date: string
-  totalSilver: number
+  totalGold: number
+  totalXp: number
   totalMinutes: number
   sessionCount: number
-  silverPerHour: number
+  goldPerHour: number
+  xpPerHour: number
 }
 
 export type TimeFilter = 'all' | '7d' | '30d' | '90d'

@@ -7,7 +7,7 @@ const CreateSessionSchema = z.object({
   spotId: z.number().int().positive(),
   startedAt: z.string().datetime(),
   duration: z.number().int().min(1),
-  silverEarned: z.number().int().min(0),
+  goldEarned: z.number().int().min(0),
   xpGained: z.number().int().min(0),
   notes: z.string().max(1000).nullable().optional(),
 })

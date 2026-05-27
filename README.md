@@ -1,6 +1,6 @@
 # Ferumbras — Tibia Hunt Tracker
 
-A hunting session tracker for Tibia, inspired by Garmoth. Track your silver, XP and time across spots and characters.
+A hunting session tracker for Tibia, inspired by Garmoth. Track your gold, XP and time across spots and characters.
 
 ![Dashboard Preview](https://via.placeholder.com/800x400/1a1a1a/ffffff?text=Ferumbras+Hunt+Tracker)
 
@@ -8,9 +8,9 @@ A hunting session tracker for Tibia, inspired by Garmoth. Track your silver, XP 
 
 - 🧙 **Character management** — name, sex, level, vocation, world
 - 🗺️ **Hunt spots** — manage your favourite grinding locations
-- ⏱️ **Session logging** — record duration, silver earned and XP gained
+- ⏱️ **Session logging** — record duration, gold earned and XP gained
 - 📊 **Dashboard** — charts per spot, class or overtime with time filters
-- 🕒 **Recent sessions** feed with silver/hour breakdown
+- 🕒 **Recent sessions** feed with gold/hour breakdown
 
 ## Stack
 
@@ -78,6 +78,6 @@ Knight · Elite Knight · Paladin · Royal Paladin · Sorcerer · Master Sorcere
 
 ```
 Character (id, name, sex, level, vocation, world)
-    └── HuntSession (id, characterId, spotId, startedAt, duration, silverEarned, xpGained, notes)
+    └── HuntSession (id, characterId, spotId, startedAt, duration, goldEarned, xpGained, notes)
             └── Spot (id, name)
 ```

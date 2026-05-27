@@ -7,7 +7,7 @@ const UpdateSessionSchema = z.object({
   spotId: z.number().int().positive().optional(),
   startedAt: z.string().datetime().optional(),
   duration: z.number().int().min(1).optional(),
-  silverEarned: z.number().int().min(0).optional(),
+  goldEarned: z.number().int().min(0).optional(),
   xpGained: z.number().int().min(0).optional(),
   notes: z.string().max(1000).nullable().optional(),
 })

@@ -1,7 +1,7 @@
 'use client'
 
 import { HuntSession } from '@/types'
-import { formatSilver, formatHours, formatDateTime, VOCATION_LABELS } from '@/lib/utils'
+import { formatGold, formatHours, formatDateTime, VOCATION_LABELS } from '@/lib/utils'
 import Button from '@/components/ui/Button'
 import { MapPin, Clock, TrendingUp, Star, Trash2 } from 'lucide-react'
 
@@ -11,7 +11,7 @@ interface Props {
 }
 
 export default function SessionCard({ session, onDelete }: Props) {
-  const sph = session.duration > 0 ? Math.round((session.silverEarned / session.duration) * 60) : 0
+  const sph = session.duration > 0 ? Math.round((session.goldEarned / session.duration) * 60) : 0
 
   return (
     <div className="bg-[#212121] border border-[#2e2e2e] rounded-xl p-4 hover:border-[#3a3a3a] transition-colors">
@@ -51,21 +51,21 @@ export default function SessionCard({ session, onDelete }: Props) {
         </div>
         <div className="bg-[#2a2a2a] rounded-lg p-2">
           <p className="text-gray-500 flex items-center gap-1 mb-0.5">
-            🪙 Silver
+            🪙 Gold
           </p>
-          <p className="font-semibold text-yellow-400">{formatSilver(session.silverEarned)}</p>
+          <p className="font-semibold text-yellow-400">{formatGold(session.goldEarned)}</p>
         </div>
         <div className="bg-[#2a2a2a] rounded-lg p-2">
           <p className="text-gray-500 flex items-center gap-1 mb-0.5">
             <TrendingUp className="w-3 h-3" /> /Hour
           </p>
-          <p className="font-semibold text-green-400">{formatSilver(sph)}</p>
+          <p className="font-semibold text-green-400">{formatGold(sph)}</p>
         </div>
       </div>
       {session.xpGained > 0 && (
         <div className="mt-2 flex items-center gap-1.5 text-xs text-gray-500">
           <Star className="w-3 h-3" />
-          <span>{formatSilver(session.xpGained)} XP</span>
+          <span>{formatGold(session.xpGained)} XP</span>
         </div>
       )}
       {session.notes && (

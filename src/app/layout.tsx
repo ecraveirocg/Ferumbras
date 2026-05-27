@@ -4,7 +4,7 @@ import Sidebar from '@/components/layout/Sidebar'
 
 export const metadata: Metadata = {
   title: 'Ferumbras - Tibia Hunt Tracker',
-  description: 'Track your Tibia hunting sessions, silver, and experience gains',
+  description: 'Track your Tibia hunting sessions, gold, and experience gains',
 }
 
 export default function RootLayout({

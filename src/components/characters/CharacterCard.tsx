@@ -1,9 +1,19 @@
 'use client'
 
-import { Character } from '@/types'
+import Image from 'next/image'
+import { Character, Vocation } from '@/types'
 import { VOCATION_LABELS, VOCATION_COLORS, SEX_LABELS } from '@/lib/utils'
 import Button from '@/components/ui/Button'
 import { Edit2, Trash2, Shield, Globe } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+
+const VOCATION_ICONS: Record<Vocation, string> = {
+  ELITE_KNIGHT:    '/EK.gif',
+  ROYAL_PALADIN:   '/RP.gif',
+  MASTER_SORCERER: '/MS.gif',
+  ELDER_DRUID:     '/ED.gif',
+  EXALTED_MONK:    '/EM.gif',
+}
 
 interface Props {
   character: Character & { _count?: { sessions: number } }
@@ -13,16 +23,27 @@ interface Props {
 
 export default function CharacterCard({ character, onEdit, onDelete }: Props) {
   const color = VOCATION_COLORS[character.vocation] ?? '#6b7280'
+  const router = useRouter()
 
   return (
-    <div className="bg-[#212121] border border-[#2e2e2e] rounded-xl p-4 hover:border-[#3a3a3a] transition-colors">
+    <div
+      className="bg-[#1a1a1a] border border-[#2e2e2e] rounded-xl p-4 hover:border-[#3a3a3a] transition-colors cursor-pointer"
+      onClick={() => router.push(`/characters/${character.id}`)}
+    >
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-center gap-3">
           <div
-            className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0"
-            style={{ backgroundColor: color + '33', border: `2px solid ${color}` }}
+            className="w-10 h-10 rounded-full flex items-center justify-center overflow-hidden flex-shrink-0"
+            style={{ backgroundColor: color + '22', border: `2px solid ${color}` }}
           >
-            {character.name.charAt(0).toUpperCase()}
+            <Image
+              src={VOCATION_ICONS[character.vocation]}
+              alt={VOCATION_LABELS[character.vocation]}
+              width={32}
+              height={32}
+              className="object-contain"
+              unoptimized
+            />
           </div>
           <div>
             <h3 className="font-semibold text-white">{character.name}</h3>
@@ -30,10 +51,10 @@ export default function CharacterCard({ character, onEdit, onDelete }: Props) {
           </div>
         </div>
         <div className="flex gap-1">
-          <Button variant="ghost" size="sm" onClick={() => onEdit(character)} className="w-8 h-8 p-0">
+          <Button variant="ghost" size="sm" onClick={(e) => { e.stopPropagation(); onEdit(character) }} className="w-8 h-8 p-0">
             <Edit2 className="w-3.5 h-3.5" />
           </Button>
-          <Button variant="ghost" size="sm" onClick={() => onDelete(character.id)} className="w-8 h-8 p-0 hover:text-red-400">
+          <Button variant="ghost" size="sm" onClick={(e) => { e.stopPropagation(); onDelete(character.id) }} className="w-8 h-8 p-0 hover:text-red-400">
             <Trash2 className="w-3.5 h-3.5" />
           </Button>
         </div>

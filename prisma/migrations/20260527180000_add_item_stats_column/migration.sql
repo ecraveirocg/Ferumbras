@@ -1,0 +1,1 @@
+ALTER TABLE `TibiaItemCache` ADD COLUMN `stats` TEXT NULL;

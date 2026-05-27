@@ -20,12 +20,34 @@ model Character {
   createdAt DateTime      @default(now())
   updatedAt DateTime      @updatedAt
   sessions  HuntSession[]
+  gear      CharacterGear?
 }
 
 model Spot {
   id       Int           @id @default(autoincrement())
   name     String        @unique
   sessions HuntSession[]
+}
+
+model CharacterGear {
+  id          Int       @id @default(autoincrement())
+  characterId Int       @unique
+  character   Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
+  slots       String    @default("{}") @db.Text
+  runes       String    @default("[]") @db.Text
+  pots        String    @default("[]") @db.Text
+  presets     String    @default("[]") @db.Text
+  updatedAt   DateTime  @updatedAt
+}
+
+model TibiaItemCache {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  image     String?  @db.Text
+  stats     String?  @db.Text
+  updatedAt DateTime @updatedAt
+
+  @@index([name])
 }
 
 model HuntSession {
@@ -36,7 +58,7 @@ model HuntSession {
   spot         Spot      @relation(fields: [spotId], references: [id])
   startedAt    DateTime
   duration     Int // minutes
-  silverEarned Int       @default(0)
+  goldEarned Int       @default(0)
   xpGained     Int       @default(0)
   notes        String?   @db.Text
   createdAt    DateTime  @default(now())
@@ -49,12 +71,9 @@ enum Sex {
 }
 
 enum Vocation {
-  KNIGHT
   ELITE_KNIGHT
-  PALADIN
   ROYAL_PALADIN
-  SORCERER
   MASTER_SORCERER
-  DRUID
   ELDER_DRUID
+  EXALTED_MONK
 }

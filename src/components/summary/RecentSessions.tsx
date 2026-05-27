@@ -1,7 +1,7 @@
 'use client'
 
 import { HuntSession } from '@/types'
-import { formatSilver, formatHours, formatDateTime, VOCATION_LABELS } from '@/lib/utils'
+import { formatGold, formatHours, formatDateTime, VOCATION_LABELS } from '@/lib/utils'
 import { Clock, MapPin, TrendingUp } from 'lucide-react'
 
 interface Props {
@@ -47,10 +47,10 @@ export default function RecentSessions({ sessions }: Props) {
                 </div>
               </div>
               <div className="text-right flex-shrink-0">
-                <p className="text-sm font-semibold text-yellow-400">{formatSilver(session.silverEarned)}</p>
+                <p className="text-sm font-semibold text-yellow-400">{formatGold(session.goldEarned)}</p>
                 <p className="text-xs text-gray-500 flex items-center justify-end gap-1">
                   <TrendingUp className="w-3 h-3" />
-                  {formatSilver(Math.round((session.silverEarned / session.duration) * 60))}/h
+                  {formatGold(Math.round((session.goldEarned / session.duration) * 60))}/h
                 </p>
               </div>
             </div>

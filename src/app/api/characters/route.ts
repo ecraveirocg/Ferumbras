@@ -6,10 +6,7 @@ const CreateCharacterSchema = z.object({
   name: z.string().min(1).max(50),
   sex: z.enum(['MALE', 'FEMALE']),
   level: z.number().int().min(1).max(9999),
-  vocation: z.enum([
-    'KNIGHT', 'ELITE_KNIGHT', 'PALADIN', 'ROYAL_PALADIN',
-    'SORCERER', 'MASTER_SORCERER', 'DRUID', 'ELDER_DRUID',
-  ]),
+  vocation: z.enum(['ELITE_KNIGHT', 'ROYAL_PALADIN', 'MASTER_SORCERER', 'ELDER_DRUID', 'EXALTED_MONK']),
   world: z.string().max(30).optional().default(''),
 })
 

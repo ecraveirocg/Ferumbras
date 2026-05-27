@@ -15,7 +15,7 @@ const schema = z.object({
   startedAt: z.string().min(1, 'Date is required'),
   hours: z.coerce.number().int().min(0),
   minutes: z.coerce.number().int().min(0).max(59),
-  silverEarned: z.coerce.number().int().min(0),
+  goldEarned: z.coerce.number().int().min(0),
   xpGained: z.coerce.number().int().min(0),
   notes: z.string().max(1000).optional().default(''),
 }).refine(d => d.hours > 0 || d.minutes > 0, {
@@ -26,7 +26,7 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>
 
 interface Props {
-  onSubmit: (data: { characterId: number; spotId: number; startedAt: string; duration: number; silverEarned: number; xpGained: number; notes: string | null }) => Promise<void>
+  onSubmit: (data: { characterId: number; spotId: number; startedAt: string; duration: number; goldEarned: number; xpGained: number; notes: string | null }) => Promise<void>
   loading?: boolean
 }
 
@@ -40,7 +40,7 @@ export default function SessionForm({ onSubmit, loading }: Props) {
       startedAt: new Date().toISOString().slice(0, 16),
       hours: 1,
       minutes: 0,
-      silverEarned: 0,
+      goldEarned: 0,
       xpGained: 0,
       notes: '',
     },
@@ -58,7 +58,7 @@ export default function SessionForm({ onSubmit, loading }: Props) {
       spotId: data.spotId,
       startedAt: new Date(data.startedAt).toISOString(),
       duration,
-      silverEarned: data.silverEarned,
+      goldEarned: data.goldEarned,
       xpGained: data.xpGained,
       notes: data.notes || null,
     })
@@ -110,13 +110,13 @@ export default function SessionForm({ onSubmit, loading }: Props) {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Input
-          label="Silver Earned"
+          label="Gold Earned"
           type="number"
           min={0}
           placeholder="e.g. 1000000"
-          error={errors.silverEarned?.message}
-          hint="Total loot value in gold/silver"
-          {...register('silverEarned')}
+          error={errors.goldEarned?.message}
+          hint="Total loot value in gold/gold"
+          {...register('goldEarned')}
         />
         <Input
           label="XP Gained"

@@ -1,0 +1,1 @@
+ALTER TABLE `CharacterGear` ADD COLUMN `presets` TEXT NOT NULL DEFAULT '[]';
