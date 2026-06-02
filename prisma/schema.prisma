@@ -65,6 +65,27 @@ model HuntSession {
   updatedAt    DateTime  @updatedAt
 }
 
+model Goal {
+  id          Int       @id @default(autoincrement())
+  type        GoalType  @default(GENERAL)
+  title       String
+  itemImage   String?   @db.Text
+  description String?   @db.Text
+  target      Int?
+  current     Int       @default(0)
+  unit        String?
+  deadline    DateTime?
+  completed   Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+enum GoalType {
+  GENERAL
+  ITEM
+  LEVEL
+}
+
 enum Sex {
   MALE
   FEMALE

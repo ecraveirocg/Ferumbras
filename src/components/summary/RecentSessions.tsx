@@ -50,7 +50,7 @@ export default function RecentSessions({ sessions }: Props) {
                 <p className="text-sm font-semibold text-yellow-400">{formatGold(session.goldEarned)}</p>
                 <p className="text-xs text-gray-500 flex items-center justify-end gap-1">
                   <TrendingUp className="w-3 h-3" />
-                  {formatGold(Math.round((session.goldEarned / session.duration) * 60))}/h
+                  {session.duration > 0 ? formatGold(Math.round((session.goldEarned / session.duration) * 60)) : '0'}/h
                 </p>
               </div>
             </div>

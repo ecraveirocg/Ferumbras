@@ -113,10 +113,13 @@ export async function GET(req: Request) {
       if (streak > longestStreak) longestStreak = streak
     }
 
+    const avgXpPerHour = totalMinutes > 0 ? Math.round((totalXp / totalMinutes) * 60) : 0
+
     return NextResponse.json({
       totalGold,
       totalXp,
       avgGoldPerHour,
+      avgXpPerHour,
       totalHours,
       daysActive,
       currentStreak,

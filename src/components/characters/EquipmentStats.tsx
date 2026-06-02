@@ -141,53 +141,55 @@ export default function EquipmentStats({ slots }: Props) {
   const hasLoaded   = Object.keys(statsMap).length > 0
 
   return (
-    <div className="bg-[#1a1a1a] border border-[#2e2e2e] rounded-xl p-4">
-      <div className="flex items-center gap-2 mb-3">
-        <Star className="w-3.5 h-3.5 text-yellow-500/70" />
-        <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Equipment Stats</h3>
+    <div className="bg-[#141414] border border-[#242424] rounded-2xl overflow-hidden">
+      <div className="px-4 py-3 flex items-center gap-2 border-b border-[#1e1e1e] bg-[#0d0d0d]/40">
+        <Star className="w-3.5 h-3.5 text-yellow-400/60" />
+        <h3 className="text-xs font-semibold text-gray-300 uppercase tracking-wider">Stats</h3>
         {loading && (
-          <span className="ml-auto text-[10px] text-gray-600 animate-pulse">Loading…</span>
+          <span className="ml-auto text-[10px] text-gray-600 animate-pulse">Fetching…</span>
         )}
       </div>
 
-      {!hasEquipped ? (
-        <p className="text-xs text-gray-600 text-center py-4">No items equipped</p>
-      ) : !hasLoaded && loading ? (
-        <div className="space-y-2">
-          {[1, 2, 3, 4].map(i => (
-            <div key={i} className="flex items-center justify-between py-1">
-              <div className="h-3 w-20 bg-[#2a2a2a] rounded animate-pulse" />
-              <div className="h-3 w-8  bg-[#2a2a2a] rounded animate-pulse" />
-            </div>
-          ))}
-        </div>
-      ) : rows.length === 0 ? (
-        <p className="text-xs text-gray-600 text-center py-4">Stats not available</p>
-      ) : (
-        <div className="space-y-3">
-          {sections.map(section => (
-            <div key={section.id}>
-              {sections.length > 1 && (
-                <p className="text-[9px] font-semibold text-gray-600 uppercase tracking-widest mb-1">{section.label}</p>
-              )}
-              <div className="space-y-0.5">
-                {section.rows.map(row => (
-                  <div
-                    key={row.key}
-                    className="flex items-center justify-between py-1 border-b border-[#1e1e1e] last:border-0"
-                  >
-                    <div className="flex items-center gap-1.5">
-                      {row.icon}
-                      <span className="text-xs text-gray-400">{row.label}</span>
-                    </div>
-                    <span className={cn('text-sm font-bold tabular-nums', row.color)}>{row.display}</span>
-                  </div>
-                ))}
+      <div className="p-4">
+        {!hasEquipped ? (
+          <p className="text-xs text-gray-600 text-center py-4">Equip items to see stats</p>
+        ) : !hasLoaded && loading ? (
+          <div className="space-y-2">
+            {[1, 2, 3, 4].map(i => (
+              <div key={i} className="flex items-center justify-between py-1">
+                <div className="h-3 w-20 bg-[#222] rounded animate-pulse" />
+                <div className="h-3 w-8  bg-[#222] rounded animate-pulse" />
               </div>
-            </div>
-          ))}
-        </div>
-      )}
+            ))}
+          </div>
+        ) : rows.length === 0 ? (
+          <p className="text-xs text-gray-600 text-center py-4">Stats not available</p>
+        ) : (
+          <div className="space-y-4">
+            {sections.map(section => (
+              <div key={section.id}>
+                {sections.length > 1 && (
+                  <p className="text-[9px] font-semibold text-gray-600 uppercase tracking-widest mb-2">{section.label}</p>
+                )}
+                <div className="space-y-0.5">
+                  {section.rows.map(row => (
+                    <div
+                      key={row.key}
+                      className="flex items-center justify-between py-2 border-b border-[#1a1a1a] last:border-0"
+                    >
+                      <div className="flex items-center gap-2">
+                        {row.icon}
+                        <span className="text-xs text-gray-400">{row.label}</span>
+                      </div>
+                      <span className={cn('text-sm font-bold tabular-nums', row.color)}>{row.display}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   )
 }

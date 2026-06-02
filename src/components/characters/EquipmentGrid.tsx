@@ -285,7 +285,7 @@ function ItemCombo({ fallback, value, placeholder, onCommit }: ItemComboProps) {
       try {
         const res  = await fetch(`/api/tibia/items?q=${encodeURIComponent(query)}`)
         const data: TibiaItem[] = await res.json()
-        setResults(data)
+        setResults(Array.isArray(data) ? data : [])
       } catch { setResults([]) }
       finally { setLoading(false) }
     }, 320)
@@ -628,6 +628,7 @@ export default function EquipmentGrid({ slots = {}, onChange, presets = [], onPr
     fetch(`/api/tibia/items?names=${unique.map(encodeURIComponent).join('|')}`)
       .then(r => r.json())
       .then((items: { name: string; image: string | null }[]) => {
+        if (!Array.isArray(items)) return
         setImageCache(prev => {
           const next = { ...prev }
           for (const item of items) next[item.name] = item.image
@@ -703,9 +704,12 @@ export default function EquipmentGrid({ slots = {}, onChange, presets = [], onPr
       <div className="flex flex-col gap-4 flex-shrink-0">
 
         {/* Equipment Preset card */}
-        <div className="bg-[#1a1a1a] border border-[#2e2e2e] rounded-xl p-5">
-          <h3 className="text-sm font-semibold text-gray-300 mb-1">Equipment Preset</h3>
-          <p className="text-xs text-gray-500 mb-4">Select a slot to assign an item.</p>
+        <div className="bg-[#141414] border border-[#242424] rounded-2xl overflow-hidden">
+          <div className="px-5 py-3 border-b border-[#1e1e1e] bg-[#0d0d0d]/40 flex items-center gap-2">
+            <div className="w-1 h-3.5 rounded-full bg-blue-500" />
+            <h3 className="text-xs font-semibold text-gray-300 uppercase tracking-wider">Equipment</h3>
+          </div>
+          <div className="p-5">
 
           <div className="flex flex-col gap-1.5">
             {GRID_ROWS.map((row, ri) => (
@@ -787,29 +791,30 @@ export default function EquipmentGrid({ slots = {}, onChange, presets = [], onPr
               </div>
             ))}
           </div>
+          </div>
         </div>
 
         {/* Presets card */}
-        <div className="bg-[#1a1a1a] border border-[#2e2e2e] rounded-xl p-5">
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-2">
-              <BookMarked className="w-3.5 h-3.5 text-gray-400" />
-              <h3 className="text-sm font-semibold text-gray-300">Presets</h3>
-              {presets.length > 0 && (
-                <span className="text-[10px] text-gray-600 bg-[#2a2a2a] px-1.5 py-0.5 rounded-full">
-                  {presets.length}
-                </span>
-              )}
-            </div>
+        <div className="bg-[#141414] border border-[#242424] rounded-2xl overflow-hidden">
+          <div className="px-5 py-3 border-b border-[#1e1e1e] bg-[#0d0d0d]/40 flex items-center gap-2">
+            <div className="w-1 h-3.5 rounded-full bg-purple-500" />
+            <BookMarked className="w-3.5 h-3.5 text-gray-400" />
+            <h3 className="text-xs font-semibold text-gray-300 uppercase tracking-wider">Presets</h3>
+            {presets.length > 0 && (
+              <span className="text-[10px] text-gray-500 bg-white/5 border border-white/10 px-1.5 py-0.5 rounded-full">
+                {presets.length}
+              </span>
+            )}
             {!savingPreset && (
               <button
                 onClick={() => setSavingPreset(true)}
-                className="flex items-center gap-1 text-xs text-gray-500 hover:text-white transition-colors px-2 py-1 rounded-lg hover:bg-[#2a2a2a]"
+                className="ml-auto flex items-center gap-1 text-xs text-gray-500 hover:text-white transition-colors px-2 py-1 rounded-lg hover:bg-white/5"
               >
                 <Plus className="w-3 h-3" /> Save current
               </button>
             )}
           </div>
+          <div className="p-4">
 
           {/* Save preset input */}
           {savingPreset && (
@@ -843,7 +848,7 @@ export default function EquipmentGrid({ slots = {}, onChange, presets = [], onPr
 
           {/* Preset list */}
           {presets.length === 0 && !savingPreset ? (
-            <p className="text-xs text-gray-600 text-center py-3">
+            <p className="text-xs text-gray-600 text-center py-4">
               No presets yet — configure your gear and save it.
             </p>
           ) : (
@@ -855,7 +860,7 @@ export default function EquipmentGrid({ slots = {}, onChange, presets = [], onPr
                     'flex items-center gap-2 px-3 py-2.5 rounded-xl border transition-all group cursor-pointer',
                     loadedId === preset.id
                       ? 'bg-green-500/10 border-green-500/40'
-                      : 'bg-[#111111] border-[#2a2a2a] hover:border-[#3a3a3a] hover:bg-[#141414]'
+                      : 'bg-[#0d0d0d] border-[#242424] hover:border-[#333] hover:bg-[#111]'
                   )}
                   onClick={() => loadPreset(preset)}
                 >
@@ -880,92 +885,94 @@ export default function EquipmentGrid({ slots = {}, onChange, presets = [], onPr
               ))}
             </div>
           )}
+          </div>
         </div>
 
       </div>
 
       {/* RIGHT CARD — item picker */}
-      <div className="bg-[#1a1a1a] border border-[#2e2e2e] rounded-xl p-5 flex-1 min-w-0">
+      <div className="bg-[#141414] border border-[#242424] rounded-2xl overflow-hidden flex-1 min-w-0">
         {selectedDef ? (
-          <div className="flex flex-col gap-4">
-
-            {/* Slot header */}
-            <div className="flex items-center gap-2 pb-3 border-b border-[#2a2a2a]">
-              <div className="w-9 h-9 flex items-center justify-center rounded-lg bg-[#1a1f2e] border border-blue-500/40 flex-shrink-0">
-                <div className="opacity-70 scale-75">{selectedDef.svg}</div>
+          <>
+            {/* Header */}
+            <div className="px-5 py-3 border-b border-[#1e1e1e] bg-[#0d0d0d]/40 flex items-center gap-3">
+              <div className="w-1 h-3.5 rounded-full bg-blue-500" />
+              <div className="w-7 h-7 flex items-center justify-center rounded-lg bg-blue-500/10 border border-blue-500/30 flex-shrink-0">
+                <div className="opacity-80 scale-[0.65]">{selectedDef.svg}</div>
               </div>
-              <div>
-                <p className="text-sm font-semibold text-white">{selectedDef.label}</p>
-                <p className="text-[11px] text-gray-500">
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-semibold text-gray-200 uppercase tracking-wider">{selectedDef.label}</p>
+                <p className="text-[10px] text-gray-500">
                   {slots[selected!] ? 'Item equipped' : 'Empty slot'}
                 </p>
               </div>
               {slots[selected!] && (
                 <button
                   onClick={() => clearSlot(selected!)}
-                  className="ml-auto text-gray-500 hover:text-red-400 transition-colors flex items-center gap-1 text-xs"
+                  className="text-gray-500 hover:text-red-400 transition-colors flex items-center gap-1 text-xs"
                 >
                   <X className="w-3 h-3" /> Clear
                 </button>
               )}
             </div>
 
-            {/* Current item */}
-            {slots[selected!] && (
-              <div className="flex items-center gap-2 px-3 py-2 bg-[#141414] border border-[#3a3a3a] rounded-lg">
-                {imageCache[slots[selected!]] ? (
-                  <Image
-                    src={imageCache[slots[selected!]]!}
-                    alt={slots[selected!]}
-                    width={28}
-                    height={28}
-                    className="object-contain flex-shrink-0"
-                    unoptimized
+            <div className="p-5 flex flex-col gap-4">
+              {/* Current item */}
+              {slots[selected!] && (
+                <div className="flex items-center gap-3 px-3 py-2.5 bg-[#0d0d0d] border border-[#242424] rounded-xl">
+                  {imageCache[slots[selected!]] ? (
+                    <Image
+                      src={imageCache[slots[selected!]]!}
+                      alt={slots[selected!]}
+                      width={28}
+                      height={28}
+                      className="object-contain flex-shrink-0"
+                      unoptimized
+                    />
+                  ) : (
+                    <ChevronRight className="w-3 h-3 text-blue-400 flex-shrink-0" />
+                  )}
+                  <span className="text-sm text-white truncate">{slots[selected!]}</span>
+                </div>
+              )}
+
+              {/* DB sync status */}
+              <SyncBanner />
+
+              {/* Item search combobox */}
+              <div>
+                <p className="text-[10px] text-gray-500 mb-1.5 uppercase tracking-wide">Item</p>
+                <ItemCombo
+                  fallback={suggestions}
+                  value={slots[selected!] ?? ''}
+                  placeholder={`Search ${selectedDef.label} on TibiaWiki…`}
+                  onCommit={(name, image) => setItem(name, image)}
+                />
+              </div>
+
+              {/* Imbuements */}
+              <div>
+                <p className="text-[10px] text-gray-500 mb-1.5 uppercase tracking-wide flex items-center gap-1">
+                  <Sparkles className="w-3 h-3 text-purple-400" /> Imbuements
+                </p>
+                <div className="flex gap-2">
+                  <ImbuSlot
+                    label="Imbuement slot 1"
+                    value={slots[`${selected!}_imbu1`] ?? ''}
+                    onChange={v => onChange({ ...slots, [`${selected!}_imbu1`]: v })}
                   />
-                ) : (
-                  <ChevronRight className="w-3 h-3 text-blue-400 flex-shrink-0" />
-                )}
-                <span className="text-sm text-white truncate">{slots[selected!]}</span>
-              </div>
-            )}
-
-            {/* DB sync status */}
-            <SyncBanner />
-
-            {/* Item search combobox */}
-            <div>
-              <p className="text-[10px] text-gray-500 mb-1.5 uppercase tracking-wide">Item</p>
-              <ItemCombo
-                fallback={suggestions}
-                value={slots[selected!] ?? ''}
-                placeholder={`Search ${selectedDef.label} on TibiaWiki…`}
-                onCommit={(name, image) => setItem(name, image)}
-              />
-            </div>
-
-            {/* Imbuements */}
-            <div>
-              <p className="text-[10px] text-gray-500 mb-1.5 uppercase tracking-wide flex items-center gap-1">
-                <Sparkles className="w-3 h-3 text-purple-400" /> Imbuements
-              </p>
-              <div className="flex gap-2">
-                <ImbuSlot
-                  label="Imbuement slot 1"
-                  value={slots[`${selected!}_imbu1`] ?? ''}
-                  onChange={v => onChange({ ...slots, [`${selected!}_imbu1`]: v })}
-                />
-                <ImbuSlot
-                  label="Imbuement slot 2"
-                  value={slots[`${selected!}_imbu2`] ?? ''}
-                  onChange={v => onChange({ ...slots, [`${selected!}_imbu2`]: v })}
-                />
+                  <ImbuSlot
+                    label="Imbuement slot 2"
+                    value={slots[`${selected!}_imbu2`] ?? ''}
+                    onChange={v => onChange({ ...slots, [`${selected!}_imbu2`]: v })}
+                  />
+                </div>
               </div>
             </div>
-
-          </div>
+          </>
         ) : (
-          <div className="flex flex-col items-center justify-center h-full text-gray-600 py-12 gap-2">
-            <div className="w-10 h-10 rounded-xl bg-[#141414] border border-[#2a2a2a] flex items-center justify-center opacity-40">
+          <div className="flex flex-col items-center justify-center h-full text-gray-600 py-16 gap-2">
+            <div className="w-10 h-10 rounded-xl bg-[#1a1a1a] border border-[#242424] flex items-center justify-center opacity-40">
               <svg viewBox="0 0 40 40" className="w-6 h-6 text-white" fill="currentColor">
                 <path d="M12 8 L8 16 L12 36 L28 36 L32 16 L28 8 L24 12 L20 10 L16 12 Z" />
               </svg>

@@ -20,7 +20,8 @@ export default function SpotsPage() {
   const fetchSpots = () => {
     fetch('/api/spots')
       .then(r => r.json())
-      .then(d => { setSpots(d); setLoading(false) })
+      .then(d => { setSpots(Array.isArray(d) ? d : []); setLoading(false) })
+      .catch(() => setLoading(false))
   }
 
   useEffect(() => { fetchSpots() }, [])

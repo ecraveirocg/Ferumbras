@@ -21,38 +21,62 @@ export default function CharactersPage() {
   const [showModal, setShowModal] = useState(false)
   const [editChar, setEditChar] = useState<Character | null>(null)
   const [saving, setSaving] = useState(false)
+  const [apiError, setApiError] = useState('')
 
   const fetchCharacters = () => {
     fetch('/api/characters')
       .then(r => r.json())
-      .then(d => { setCharacters(d); setLoading(false) })
+      .then(d => { setCharacters(Array.isArray(d) ? d : []); setLoading(false) })
+      .catch(() => setLoading(false))
   }
 
   useEffect(() => { fetchCharacters() }, [])
 
   const handleCreate = async (data: FormPayload) => {
     setSaving(true)
-    await fetch('/api/characters', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    })
-    setSaving(false)
-    setShowModal(false)
-    fetchCharacters()
+    setApiError('')
+    try {
+      const res = await fetch('/api/characters', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      })
+      if (!res.ok) {
+        const d = await res.json().catch(() => ({}))
+        setApiError(d.error ? JSON.stringify(d.error) : `Error ${res.status}`)
+        return
+      }
+      setShowModal(false)
+      fetchCharacters()
+    } catch {
+      setApiError('Failed to connect to the server')
+    } finally {
+      setSaving(false)
+    }
   }
 
   const handleEdit = async (data: FormPayload) => {
     if (!editChar) return
     setSaving(true)
-    await fetch(`/api/characters/${editChar.id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    })
-    setSaving(false)
-    setEditChar(null)
-    fetchCharacters()
+    setApiError('')
+    try {
+      const res = await fetch(`/api/characters/${editChar.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      })
+      if (!res.ok) {
+        const d = await res.json().catch(() => ({}))
+        setApiError(d.error ? JSON.stringify(d.error) : `Error ${res.status}`)
+        return
+      }
+      setEditChar(null)
+      fetchCharacters()
+    } catch {
+      setApiError('Failed to connect to the server')
+    } finally {
+      setSaving(false)
+    }
   }
 
   const handleDelete = async (id: number) => {
@@ -108,18 +132,20 @@ export default function CharactersPage() {
       {/* Create modal */}
       <CreateCharacterModal
         isOpen={showModal}
-        onClose={() => setShowModal(false)}
+        onClose={() => { setShowModal(false); setApiError('') }}
         onSubmit={handleCreate}
         loading={saving}
+        error={apiError}
       />
 
       {/* Edit modal */}
       <CreateCharacterModal
         isOpen={!!editChar}
-        onClose={() => setEditChar(null)}
+        onClose={() => { setEditChar(null); setApiError('') }}
         onSubmit={handleEdit}
         loading={saving}
         character={editChar ?? undefined}
+        error={apiError}
       />
     </div>
   )

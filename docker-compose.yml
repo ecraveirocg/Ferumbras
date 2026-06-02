@@ -1,0 +1,16 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: ferumbras_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ""
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      MYSQL_DATABASE: ferumbras
+    ports:
+      - "3306:3306"
+    volumes:
+      - ferumbras_data:/var/lib/mysql
+
+volumes:
+  ferumbras_data:

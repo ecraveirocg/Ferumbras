@@ -12,10 +12,7 @@ const schema = z.object({
   name: z.string().min(1, 'Name is required').max(50),
   sex: z.enum(['MALE', 'FEMALE']),
   level: z.coerce.number().int().min(1, 'Level must be at least 1').max(9999),
-  vocation: z.enum([
-    'KNIGHT', 'ELITE_KNIGHT', 'PALADIN', 'ROYAL_PALADIN',
-    'SORCERER', 'MASTER_SORCERER', 'DRUID', 'ELDER_DRUID',
-  ]),
+  vocation: z.enum(['ELITE_KNIGHT', 'ROYAL_PALADIN', 'MASTER_SORCERER', 'ELDER_DRUID', 'EXALTED_MONK']),
   world: z.string().max(30).optional().default(''),
 })
 
@@ -33,7 +30,7 @@ export default function CharacterForm({ character, onSubmit, onCancel, loading }
     resolver: zodResolver(schema),
     defaultValues: character
       ? { name: character.name, sex: character.sex, level: character.level, vocation: character.vocation, world: character.world }
-      : { sex: 'MALE', level: 1, vocation: 'KNIGHT', world: '' },
+      : { sex: 'MALE', level: 1, vocation: 'ELITE_KNIGHT', world: '' },
   })
 
   return (
@@ -60,14 +57,11 @@ export default function CharacterForm({ character, onSubmit, onCancel, loading }
         />
       </div>
       <Select label="Vocation" error={errors.vocation?.message} {...register('vocation')}>
-        <option value="KNIGHT">Knight</option>
         <option value="ELITE_KNIGHT">Elite Knight</option>
-        <option value="PALADIN">Paladin</option>
         <option value="ROYAL_PALADIN">Royal Paladin</option>
-        <option value="SORCERER">Sorcerer</option>
         <option value="MASTER_SORCERER">Master Sorcerer</option>
-        <option value="DRUID">Druid</option>
         <option value="ELDER_DRUID">Elder Druid</option>
+        <option value="EXALTED_MONK">Exalted Monk</option>
       </Select>
       <Input
         label="World (optional)"

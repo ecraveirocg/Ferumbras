@@ -47,8 +47,8 @@ export default function SessionForm({ onSubmit, loading }: Props) {
   })
 
   useEffect(() => {
-    fetch('/api/characters').then(r => r.json()).then(setCharacters)
-    fetch('/api/spots').then(r => r.json()).then(setSpots)
+    fetch('/api/characters').then(r => r.json()).then(d => setCharacters(Array.isArray(d) ? d : [])).catch(() => {})
+    fetch('/api/spots').then(r => r.json()).then(d => setSpots(Array.isArray(d) ? d : [])).catch(() => {})
   }, [])
 
   const handleFormSubmit = async (data: FormData) => {

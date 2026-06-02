@@ -43,10 +43,11 @@ interface Props {
   onClose: () => void
   onSubmit: (data: FormData & { vocation: Vocation }) => Promise<void>
   loading?: boolean
-  character?: Character          // when editing
+  character?: Character
+  error?: string
 }
 
-export default function CreateCharacterModal({ isOpen, onClose, onSubmit, loading, character }: Props) {
+export default function CreateCharacterModal({ isOpen, onClose, onSubmit, loading, character, error }: Props) {
   const [selected, setSelected]   = useState<Vocation | null>(character?.vocation ?? null)
   const [search, setSearch]       = useState('')
 
@@ -171,7 +172,7 @@ export default function CreateCharacterModal({ isOpen, onClose, onSubmit, loadin
             <div className="space-y-3">
               <Input
                 label="Name"
-                placeholder="Optional"
+                placeholder="e.g. Tibianus III"
                 error={errors.name?.message}
                 {...register('name')}
               />
@@ -215,6 +216,11 @@ export default function CreateCharacterModal({ isOpen, onClose, onSubmit, loadin
               </div>
             </div>
           </div>
+
+          {/* API error */}
+          {error && (
+            <p className="text-xs text-red-400 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2">{error}</p>
+          )}
 
           {/* Submit */}
           <Button

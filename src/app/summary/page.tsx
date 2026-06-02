@@ -9,9 +9,11 @@ import GoldPerHourChart from '@/components/summary/GoldPerHourChart'
 import XpPerHourChart from '@/components/summary/XpPerHourChart'
 import RecentSessions from '@/components/summary/RecentSessions'
 import ActivityCalendar from '@/components/summary/ActivityCalendar'
+import GoalsCard from '@/components/summary/GoalsCard'
 import Button from '@/components/ui/Button'
 import Link from 'next/link'
-import { Plus, Filter, CalendarCheck, Swords, CircleDollarSign, Clock } from 'lucide-react'
+import { Plus, Filter, Swords } from 'lucide-react'
+import Image from 'next/image'
 import { formatHoursDecimal, formatGoldShort, formatHours } from '@/lib/utils'
 import { cn } from '@/lib/utils'
 
@@ -60,7 +62,7 @@ export default function SummaryPage() {
                 className={cn(
                   'px-4 py-1.5 text-sm rounded-md transition-all',
                   viewTab === tab.value
-                    ? 'bg-blue-600 text-white font-medium'
+                    ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white font-medium'
                     : 'text-gray-400 hover:text-white'
                 )}
               >
@@ -80,22 +82,25 @@ export default function SummaryPage() {
         </div>
       </div>
 
-      {/* Time filters */}
-      <div className="flex gap-2 mb-6">
+      {/* Time filters + Goals inline */}
+      <div className="flex items-center gap-2 mb-6">
         {TIME_FILTERS.map(f => (
           <button
             key={f.value}
             onClick={() => setTimeFilter(f.value)}
             className={cn(
-              'px-4 py-1.5 text-sm rounded-lg border transition-all',
+              'px-4 py-1.5 text-sm rounded-lg transition-all whitespace-nowrap flex-shrink-0',
               timeFilter === f.value
-                ? 'bg-blue-600 border-blue-600 text-white font-medium'
-                : 'border-[#2e2e2e] bg-[#212121] text-gray-400 hover:text-white hover:border-[#3a3a3a]'
+                ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white font-medium'
+                : 'border border-[#2e2e2e] bg-[#212121] text-gray-400 hover:text-white hover:border-[#3a3a3a]'
             )}
           >
             {f.label}
           </button>
         ))}
+        <div className="flex-1 min-w-0">
+          <GoalsCard />
+        </div>
       </div>
 
       {/* Stat cards */}
@@ -103,7 +108,7 @@ export default function SummaryPage() {
         <StatCard
           label="Days Active"
           value={loading ? '—' : String(data?.daysActive ?? 0)}
-          icon={<CalendarCheck className="w-5 h-5" />}
+          icon={<Image src="/diaria.gif" alt="diaria" width={44} height={44} unoptimized style={{ transform: 'translateY(-3px)' }} className="object-contain" />}
           color="green"
         />
         <StatCard
@@ -111,23 +116,23 @@ export default function SummaryPage() {
           value={loading ? '—' : formatGoldShort(data?.totalXp ?? 0)}
           icon={<Swords className="w-5 h-5" />}
           color="red"
-          sparkData={data?.sessionsByDate.map(d => ({ value: d.totalXp ?? 0, label: d.date }))}
+          sparkData={data?.sessionsByDate?.map(d => ({ value: d.totalXp ?? 0, label: d.date }))}
           sparkFormatter={(v) => formatGoldShort(v) + ' XP'}
         />
         <StatCard
           label="Total Gold"
           value={loading ? '—' : formatGoldShort(data?.totalGold ?? 0)}
-          icon={<CircleDollarSign className="w-5 h-5" />}
+          icon={<Image src="/gold_coin.gif" alt="Gold" width={20} height={20} unoptimized />}
           color="yellow"
-          sparkData={data?.sessionsByDate.map(d => ({ value: d.totalGold, label: d.date }))}
+          sparkData={data?.sessionsByDate?.map(d => ({ value: d.totalGold, label: d.date }))}
           sparkFormatter={formatGoldShort}
         />
         <StatCard
           label="Total Hours Hunting"
           value={loading ? '—' : formatHoursDecimal(data ? data.totalHours * 60 : 0) + 'h'}
-          icon={<Clock className="w-5 h-5" />}
+          icon={<Image src="/walking.gif" alt="walking" width={44} height={44} unoptimized className="object-contain mb-3" />}
           color="blue"
-          sparkData={data?.sessionsByDate.map(d => ({ value: d.totalMinutes, label: d.date }))}
+          sparkData={data?.sessionsByDate?.map(d => ({ value: d.totalMinutes, label: d.date }))}
           sparkFormatter={formatHours}
         />
       </div>

@@ -27,14 +27,14 @@ export default function SessionsPage() {
     if (filterSpotId) params.set('spotId', filterSpotId)
     fetch(`/api/sessions?${params}`)
       .then(r => r.json())
-      .then(d => { setSessions(d.sessions); setTotal(d.total); setLoading(false) })
+      .then(d => { setSessions(Array.isArray(d.sessions) ? d.sessions : []); setTotal(d.total ?? 0); setLoading(false) })
       .catch(() => setLoading(false))
   }, [page, filterCharId, filterSpotId])
 
   useEffect(() => { fetchSessions() }, [fetchSessions])
   useEffect(() => {
-    fetch('/api/characters').then(r => r.json()).then(setCharacters)
-    fetch('/api/spots').then(r => r.json()).then(setSpots)
+    fetch('/api/characters').then(r => r.json()).then(d => setCharacters(Array.isArray(d) ? d : [])).catch(() => {})
+    fetch('/api/spots').then(r => r.json()).then(d => setSpots(Array.isArray(d) ? d : [])).catch(() => {})
   }, [])
 
   const handleDelete = async (id: number) => {

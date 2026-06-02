@@ -42,6 +42,120 @@ body {
   background: #4a4a4a;
 }
 
+/* ── Sanguine rotating border ── */
+/* ── Level rotating border ── */
+@property --level-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes levelSpin {
+  to { --level-angle: 360deg; }
+}
+
+.level-border {
+  padding: 1.5px;
+  border-radius: 1rem;
+  background: conic-gradient(
+    from var(--level-angle),
+    #1e3a5f,
+    #38bdf8,
+    #e0f2fe,
+    #38bdf8,
+    #1e3a5f
+  );
+  animation: levelSpin 3s linear infinite;
+}
+
+.level-inner {
+  border-radius: calc(1rem - 1.5px);
+  width: 100%;
+  height: 100%;
+  animation: none;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  background:
+    radial-gradient(ellipse at top left,     rgba(56, 189, 248, 0.10) 0%, transparent 60%),
+    radial-gradient(ellipse at bottom right, rgba(30,  58,  95,  0.15) 0%, transparent 60%),
+    rgba(10, 14, 20, 0.90);
+}
+
+@property --sanguine-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes sanguineSpin {
+  to { --sanguine-angle: 360deg; }
+}
+
+.sanguine-border {
+  padding: 1.5px;
+  border-radius: 1rem;
+  background: conic-gradient(
+    from var(--sanguine-angle),
+    #dc2626,
+    #c8a96e,
+    #fde68a,
+    #c8a96e,
+    #dc2626
+  );
+  animation: sanguineSpin 3s linear infinite;
+}
+
+.sanguine-inner {
+  border-radius: calc(1rem - 1.5px);
+  width: 100%;
+  height: 100%;
+  animation: none;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  background:
+    radial-gradient(ellipse at top left,     rgba(220, 38,  38,  0.12) 0%, transparent 60%),
+    radial-gradient(ellipse at bottom right, rgba(200, 169, 110, 0.10) 0%, transparent 60%),
+    rgba(14, 10, 10, 0.88);
+}
+
+/* ── Page transition — Tibia character walk ── */
+@keyframes tibiaWalk {
+  from { transform: translateX(-140px); }
+  to   { transform: translateX(140px); }
+}
+
+@keyframes tibiaShadow {
+  0%, 100% { transform: translateX(-50%) scaleX(1);   opacity: 0.35; }
+  50%       { transform: translateX(-50%) scaleX(0.85); opacity: 0.25; }
+}
+
+@keyframes tibiaBounce {
+  0%, 100% { transform: translateY(0);  }
+  50%       { transform: translateY(-4px); }
+}
+
+@keyframes tibiaOverlayIn {
+  from { opacity: 0; backdrop-filter: blur(0px); }
+  to   { opacity: 1; backdrop-filter: blur(6px); }
+}
+
+@keyframes tibiaGifPulse {
+  0%, 100% { transform: scale(1);    filter: drop-shadow(0 0 18px rgba(180,80,255,0.35)); }
+  50%       { transform: scale(1.04); filter: drop-shadow(0 0 32px rgba(180,80,255,0.6));  }
+}
+
+@keyframes tibiaBar {
+  0%   { transform: scaleX(0); }
+  10%  { transform: scaleX(0.15); }
+  80%  { transform: scaleX(0.88); }
+  100% { transform: scaleX(0.95); }
+}
+
+.tibia-walk    { animation: tibiaWalk   3s linear forwards; }
+.tibia-bounce  { animation: tibiaBounce 0.4s ease-in-out infinite; }
+.tibia-shadow  { animation: tibiaShadow 0.4s ease-in-out infinite; }
+.tibia-overlay { animation: tibiaOverlayIn 250ms ease forwards; }
+
 .recharts-tooltip-wrapper {
   outline: none !important;
 }
