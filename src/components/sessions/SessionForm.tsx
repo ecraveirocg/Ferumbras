@@ -7,11 +7,12 @@ import { z } from 'zod'
 import Input from '@/components/ui/Input'
 import Select from '@/components/ui/Select'
 import Button from '@/components/ui/Button'
-import { Character, Spot } from '@/types'
+import SpotSearchInput from '@/components/sessions/SpotSearchInput'
+import { Character } from '@/types'
 
 const schema = z.object({
   characterId: z.coerce.number().int().positive('Select a character'),
-  spotId: z.coerce.number().int().positive('Select a spot'),
+  spotId: z.coerce.number().int().positive('Selecione um spot'),
   startedAt: z.string().min(1, 'Date is required'),
   hours: z.coerce.number().int().min(0),
   minutes: z.coerce.number().int().min(0).max(59),
@@ -32,9 +33,9 @@ interface Props {
 
 export default function SessionForm({ onSubmit, loading }: Props) {
   const [characters, setCharacters] = useState<Character[]>([])
-  const [spots, setSpots] = useState<Spot[]>([])
+  const [selectedSpotId, setSelectedSpotId] = useState<number | null>(null)
 
-  const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
+  const { register, handleSubmit, setValue, formState: { errors } } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: {
       startedAt: new Date().toISOString().slice(0, 16),
@@ -48,8 +49,12 @@ export default function SessionForm({ onSubmit, loading }: Props) {
 
   useEffect(() => {
     fetch('/api/characters').then(r => r.json()).then(d => setCharacters(Array.isArray(d) ? d : [])).catch(() => {})
-    fetch('/api/spots').then(r => r.json()).then(d => setSpots(Array.isArray(d) ? d : [])).catch(() => {})
   }, [])
+
+  const handleSpotChange = (spotId: number) => {
+    setSelectedSpotId(spotId)
+    setValue('spotId', spotId, { shouldValidate: true })
+  }
 
   const handleFormSubmit = async (data: FormData) => {
     const duration = data.hours * 60 + data.minutes
@@ -73,12 +78,11 @@ export default function SessionForm({ onSubmit, loading }: Props) {
             <option key={c.id} value={c.id}>{c.name} (Lv. {c.level})</option>
           ))}
         </Select>
-        <Select label="Spot" error={errors.spotId?.message} {...register('spotId')}>
-          <option value="">Select spot...</option>
-          {spots.map(s => (
-            <option key={s.id} value={s.id}>{s.name}</option>
-          ))}
-        </Select>
+        <SpotSearchInput
+          value={selectedSpotId}
+          onChange={handleSpotChange}
+          error={errors.spotId?.message}
+        />
       </div>
       <Input
         label="Started At"
